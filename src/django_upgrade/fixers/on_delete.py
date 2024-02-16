@@ -1,5 +1,5 @@
 """
-Add on_delete=models.CASCADE to ForeignKey and OneToOneField:
+Add on_delete=models.SET_NULL to ForeignKey and OneToOneField:
 https://docs.djangoproject.com/en/stable/releases/1.9/#features-deprecated-in-1-9
 """
 
@@ -49,7 +49,7 @@ def visit_ImportFrom(
         )
 
 
-# Track if we need to update `from django.db.models` import to add CASCADE.
+# Track if we need to update `from django.db.models` import to add SET_NULL.
 should_update_import: MutableMapping[State, bool] = WeakKeyDictionary()
 
 
@@ -62,7 +62,7 @@ def update_django_models_import(
         insert(
             tokens,
             j,
-            new_src=f"{indent}from django.db.models import CASCADE\n",
+            new_src=f"{indent}from django.db.models import SET_NULL\n",
         )
 
 
@@ -106,9 +106,9 @@ def add_on_delete_keyword(
     func_args, close_idx = parse_call_args(tokens, open_idx)
 
     if models_imported:
-        new_src = "on_delete=models.CASCADE"
+        new_src = "on_delete=models.SET_NULL"
     else:
-        new_src = "on_delete=CASCADE"
+        new_src = "on_delete=SET_NULL"
 
     if num_pos_args == 0:
         if len(func_args) > 0:
